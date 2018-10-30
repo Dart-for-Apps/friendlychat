@@ -2,14 +2,7 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(
-    new MaterialApp(
-      title: "Friendlychat",
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Friendlychat"),
-        ),
-      ),
-    ),
+    new FriendlychatApp()
   );
 }
 
@@ -24,7 +17,13 @@ class FriendlychatApp extends StatelessWidget {
     }
 }
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new ChatScreenState();
+  }
+}
+class ChatScreenState extends State<ChatScreen> {
   @override
   Widget build (BuildContext context) {
     return new Scaffold(
