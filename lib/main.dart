@@ -32,6 +32,8 @@ class ChatScreenState extends State<ChatScreen> {
   // 채팅 메시지 표기를 위한 부분
   final List<ChatMessage> _messages = <ChatMessage>[];
 
+  // 커스텀
+  final _focusNode = new FocusNode();
   @override
   Widget build (BuildContext context) {
     return new Scaffold(
@@ -75,7 +77,8 @@ class ChatScreenState extends State<ChatScreen> {
               child: new TextField(
                 controller: _textController, // text 변화 받아 들일 컨트롤러
                 onSubmitted: _handleSubmitted, // 엔터/전송 했을 때 처리할 메소드
-                decoration: new InputDecoration.collapsed( hintText: "Send a message")
+                decoration: new InputDecoration.collapsed( hintText: "Send a message"),
+                focusNode: _focusNode,
               ),
             ),
             // 아이콘 이미지에 맞는 크기를 갖도록 Container 사용 
@@ -93,6 +96,7 @@ class ChatScreenState extends State<ChatScreen> {
   }
   void _handleSubmitted(String text) {
     _textController.clear();
+    FocusScope.of(context).requestFocus(_focusNode);
     // 메시지 리스트에 추가할 새로운 메시지 위젯 생성
     ChatMessage message = new ChatMessage(
       text: text, 
