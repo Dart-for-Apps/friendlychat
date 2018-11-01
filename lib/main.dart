@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'message.dart';
 
 void main() {
   runApp(
@@ -27,13 +28,35 @@ class ChatScreenState extends State<ChatScreen> {
   // text field 와 연계하여, 매 텍스트 업데이트 마다
   // 업데이트 된 텍스트와 선택된 텍스트를 조정함. 초기값도 설정 가능
   final TextEditingController _textController = new TextEditingController();
+
+  // 채팅 메시지 표기를 위한 부분
+  final List<ChatMessage> _messages = <ChatMessage>[];
+
   @override
   Widget build (BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Friendlychat"),
       ),
-      body: _buildTextComposer(),
+      // 위젯 아이템들을 수직으로 배열
+      // 채팅 내용/구분자/최하단에 채팅 인풋 필드
+      body: new Column(children: <Widget>[
+        new Flexible(
+          child: new ListView.builder(
+            padding: new EdgeInsets.all(8.0),
+            reverse: true, // 시간 역순으로 출력하기 위한 도구
+            itemBuilder: (_, int index) => _messages[index],
+            itemCount: _messages.length,
+          ),
+        ),
+        new Divider(height: 1.0),
+        new Container(
+          decoration: new BoxDecoration(
+            color: Theme.of(context).cardColor,
+          ),
+          child: _buildTextComposer(),
+        )
+      ],)
     );
   }
 
@@ -70,5 +93,13 @@ class ChatScreenState extends State<ChatScreen> {
   }
   void _handleSubmitted(String text) {
     _textController.clear();
+    // 메시지 리스트에 추가할 새로운 메시지 위젯 생성
+    ChatMessage message = new ChatMessage(
+      text: text, 
+    );
+    // setState() 호출을 통해 rendering 하도록 
+    setState(() {
+      _messages.insert(0, message);
+    });
   }
 }

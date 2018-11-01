@@ -8,7 +8,8 @@ class ChatMessage extends StatelessWidget {
   Widget build (BuildContext context) {
     return new Container(
       margin: const EdgeInsets.symmetric(vertical: 10.0),
-      child: new Row(
+      // 아바타 1칸, 이름 및 채팅 1칸 
+      child: new Row( 
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           new Container(
@@ -16,6 +17,7 @@ class ChatMessage extends StatelessWidget {
             child: new CircleAvatar(child: new Text(_name[0])),
           ),
           new Column(
+            // 이름 한줄, 채팅 한줄
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               new Text(_name, style: Theme.of(context).textTheme.subhead),
