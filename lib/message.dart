@@ -7,12 +7,10 @@ class ChatMessage extends StatelessWidget {
   final AnimationController animationController; 
   @override
   Widget build (BuildContext context) {
-    return new SizeTransition (
-      sizeFactor: new CurvedAnimation(
-        parent: animationController.view, 
-        curve: Curves.easeOut
+    return new FadeTransition(
+      opacity: new CurvedAnimation(
+        parent: animationController.view, curve: Curves.easeOut,
       ),
-      axisAlignment: 0.0,
       child: new Container (
         margin: const EdgeInsets.symmetric(vertical: 10.0),
         // 아바타 1칸, 이름 및 채팅 1칸 
