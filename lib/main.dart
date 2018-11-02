@@ -31,6 +31,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   // 채팅 메시지 표기를 위한 부분
   final List<ChatMessage> _messages = <ChatMessage>[];
+  bool _isComposing = false;
 
   // 커스텀
   final _focusNode = new FocusNode();
@@ -76,9 +77,10 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             new Flexible(
               child: new TextField(
                 controller: _textController, // text 변화 받아 들일 컨트롤러
-                onSubmitted: _handleSubmitted, // 엔터/전송 했을 때 처리할 메소드
+                onSubmitted: _isComposing? _handleSubmitted: null, // 엔터/전송 했을 때 처리할 메소드
                 decoration: new InputDecoration.collapsed( hintText: "Send a message"),
                 focusNode: _focusNode,
+                onChanged: _handleChange,
               ),
             ),
             // 아이콘 이미지에 맞는 크기를 갖도록 Container 사용 
@@ -86,7 +88,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               margin: new EdgeInsets.symmetric(horizontal: 4.0),
               child: new IconButton(
                 icon: new Icon(Icons.send),
-                onPressed: () => _handleSubmitted(_textController.text)
+                onPressed: _isComposing ? () => _handleSubmitted(_textController.text)
+                            : null,
               )
             )
           ]
@@ -94,8 +97,16 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       )
     );
   }
+  void _handleChange(String text) {
+    setState(() {
+      _isComposing = text.length > 0;
+    });
+  }
   void _handleSubmitted(String text) {
     _textController.clear();
+    setState(() {
+          _isComposing = false;
+        });
     FocusScope.of(context).requestFocus(_focusNode);
     // 메시지 리스트에 추가할 새로운 메시지 위젯 생성
     ChatMessage message = new ChatMessage(
