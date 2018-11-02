@@ -24,7 +24,7 @@ class ChatScreen extends StatefulWidget {
     return new ChatScreenState();
   }
 }
-class ChatScreenState extends State<ChatScreen> {
+class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   // text field 와 연계하여, 매 텍스트 업데이트 마다
   // 업데이트 된 텍스트와 선택된 텍스트를 조정함. 초기값도 설정 가능
   final TextEditingController _textController = new TextEditingController();
@@ -100,10 +100,23 @@ class ChatScreenState extends State<ChatScreen> {
     // 메시지 리스트에 추가할 새로운 메시지 위젯 생성
     ChatMessage message = new ChatMessage(
       text: text, 
+      animationController: new AnimationController(
+        duration: new Duration(milliseconds: 700),
+        vsync: this,
+      ),
     );
     // setState() 호출을 통해 rendering 하도록 
     setState(() {
       _messages.insert(0, message);
     });
+    message.animationController.forward();
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    for (ChatMessage message in _messages) {
+      message.animationController.dispose();
+    }
+    super.dispose();
   }
 }
