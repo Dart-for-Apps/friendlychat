@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'message.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(
@@ -7,6 +9,15 @@ void main() {
   );
 }
 
+final ThemeData kIOSTheme = new ThemeData(
+  primaryColor: Colors.grey[100],
+  primaryColorBrightness: Brightness.light,
+  primarySwatch: Colors.orange,
+);
+final ThemeData kDefaultTheme = new ThemeData(
+  primarySwatch: Colors.purple,
+  accentColor: Colors.orangeAccent[400],
+);
 class FriendlychatApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -14,6 +25,7 @@ class FriendlychatApp extends StatelessWidget {
       return new MaterialApp(
         title: "Friendlyhat",
         home: new ChatScreen(),
+        theme: defaultTargetPlatform == TargetPlatform.iOS? kIOSTheme: kDefaultTheme,
       );
     }
 }
@@ -24,6 +36,7 @@ class ChatScreen extends StatefulWidget {
     return new ChatScreenState();
   }
 }
+
 class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   // text field 와 연계하여, 매 텍스트 업데이트 마다
   // 업데이트 된 텍스트와 선택된 텍스트를 조정함. 초기값도 설정 가능
@@ -40,26 +53,36 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Friendlychat"),
+        elevation: 
+          Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
       ),
       // 위젯 아이템들을 수직으로 배열
       // 채팅 내용/구분자/최하단에 채팅 인풋 필드
-      body: new Column(children: <Widget>[
-        new Flexible(
-          child: new ListView.builder(
-            padding: new EdgeInsets.all(8.0),
-            reverse: true, // 시간 역순으로 출력하기 위한 도구
-            itemBuilder: (_, int index) => _messages[index],
-            itemCount: _messages.length,
+      body: new Container(
+        decoration: Theme.of(context).platform == TargetPlatform.iOS ? 
+          new BoxDecoration(
+            border: new Border(
+              top: new BorderSide(color: Colors.grey[200]),
+            )
+          ): null,
+        child: new Column(children: <Widget>[
+          new Flexible(
+            child: new ListView.builder(
+              padding: new EdgeInsets.all(8.0),
+              reverse: true, // 시간 역순으로 출력하기 위한 도구
+              itemBuilder: (_, int index) => _messages[index],
+              itemCount: _messages.length,
+            ),
           ),
-        ),
-        new Divider(height: 1.0),
-        new Container(
-          decoration: new BoxDecoration(
-            color: Theme.of(context).cardColor,
-          ),
-          child: _buildTextComposer(),
-        )
-      ],)
+          new Divider(height: 1.0),
+          new Container(
+            decoration: new BoxDecoration(
+              color: Theme.of(context).cardColor,
+            ),
+            child: _buildTextComposer(),
+          )
+        ],)
+      )
     );
   }
 
@@ -86,7 +109,13 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             // 아이콘 이미지에 맞는 크기를 갖도록 Container 사용 
             new Container(
               margin: new EdgeInsets.symmetric(horizontal: 4.0),
-              child: new IconButton(
+              child: Theme.of(context).platform == TargetPlatform.iOS ?
+              new CupertinoButton(
+                child: new Text("Send"),
+                onPressed: _isComposing ? () => _handleSubmitted(_textController.text)
+                            : null,
+              ):
+              new IconButton(
                 icon: new Icon(Icons.send),
                 onPressed: _isComposing ? () => _handleSubmitted(_textController.text)
                             : null,
